@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Elena Voss — Portfolio AW26</title>
+<title>Eesha P — Portfolio Book</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<meta name="description" content="The portfolio of Elena Voss — a paginated book in the browser." />
+<meta name="description" content="The portfolio of Eesha P — a paginated book in the browser." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -21,6 +21,7 @@
   --mid:#7a7570;
   --red:#c8001e;
   --ease:cubic-bezier(.5,.05,.25,1);
+  --page-ratio:.72;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{
@@ -44,8 +45,8 @@ body{display:flex;align-items:center;justify-content:center;}
 /* ---------- Book stage & geometry ---------- */
 .stage{
   perspective:2600px;
-  width:min(96vw,1500px);
-  height:min(88vh,940px);
+  width:min(96vw,calc(88vh * (2 * var(--page-ratio))));
+  height:min(88vh,calc(96vw / (2 * var(--page-ratio))));
   display:flex;align-items:center;justify-content:center;
 }
 .book{
@@ -131,7 +132,7 @@ body{display:flex;align-items:center;justify-content:center;}
 .cover-left .bar{height:2px;width:96px;background:var(--red);margin:auto 0 18px;}
 .cover-left .name{
   font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(80px,17vw,260px);
+  font-size:clamp(58px,11.5vw,170px);
   line-height:.82;letter-spacing:.005em;color:var(--offwhite);
   word-break:break-word;
 }
@@ -354,6 +355,17 @@ body{display:flex;align-items:center;justify-content:center;}
   .stage{width:100vw;height:100vh;}
   .book{box-shadow:none;overflow:hidden;}
   .book::before,.book::after{display:none;}
+  .mobile-slide{
+    position:absolute;inset:0;z-index:220;overflow:hidden;
+    background:var(--offwhite);
+  }
+  .mobile-slide .track{
+    display:flex;height:100%;width:200vw;
+    transition:transform .55s var(--ease);
+    transform:translateX(0);
+  }
+  .mobile-slide .pane{flex:0 0 100vw;height:100%;}
+  .mobile-slide .pane .page{width:100%!important;height:100%;}
   .spread{
     position:absolute;top:0;left:0;bottom:0;
     width:200vw;height:100%;
@@ -366,7 +378,7 @@ body{display:flex;align-items:center;justify-content:center;}
   .nav-arrow svg{width:22px;height:22px;}
   .dots{bottom:10px;gap:10px;}
   .cover-left{padding:60px 26px 44px;}
-  .cover-left .name{font-size:26vw;}
+  .cover-left .name{font-size:19vw;}
   .bio-left,.clients,.team,.contact-left{padding:60px 26px 50px;}
   .bio-left .head{font-size:14vw;}
   .clients .head,.team .head{font-size:14vw;}
@@ -384,215 +396,7 @@ body{display:flex;align-items:center;justify-content:center;}
   <div class="book" id="book">
     <div class="grain"></div>
 
-    <!-- ================= SPREAD 1 — COVER ================= -->
-    <section class="spread active" data-spread="0">
-      <!-- LEFT PAGE -->
-      <div class="page dark cover-left">
-        <span class="kicker">AW26 — Ed. 01 / Portfolio</span>
-        <span class="chapter">Cover</span>
-        <span class="folio">001</span>
-
-        <div class="bar"></div>
-        <h1 class="name">ELENA<br>VOSS</h1>
-
-        <div class="info">
-          <span>IMG · Paris / New York</span>
-          <span>5'11" — Italian / Dutch</span>
-          <span>MMXXVI</span>
-        </div>
-      </div>
-      <!-- RIGHT PAGE -->
-      <div class="page right">
-        <span class="chapter">Cover</span>
-        <span class="folio">002</span>
-
-        <!-- IMG-DROP: cover portrait — replace .photo block with <img src="cover.jpg" alt="Elena Voss cover portrait"/> -->
-        <div class="photo">
-          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
-            <rect x="6" y="16" width="52" height="38" rx="1"/>
-            <path d="M22 16l4-6h12l4 6"/>
-            <circle cx="32" cy="36" r="10"/>
-            <circle cx="32" cy="36" r="4"/>
-            <circle cx="50" cy="22" r="1.4" fill="white"/>
-          </svg>
-          <div class="ph-label">Cover · Portrait</div>
-        </div>
-        <div class="ghost">VOSS</div>
-        <span class="year">MMXXVI</span>
-      </div>
-    </section>
-
-    <!-- ================= SPREAD 2 — EDITORIAL I ================= -->
-    <section class="spread" data-spread="1">
-      <div class="page">
-        <span class="folio">003</span>
-        <!-- IMG-DROP: editorial 01 — replace .photo block with <img src="edit01.jpg" alt="..."/> -->
-        <div class="photo">
-          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
-            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
-          </svg>
-          <div class="ph-label">Editorial · 01</div>
-        </div>
-        <div class="edit-caption">
-          <em>Vogue Italia</em><span class="dash">—</span><span>Cold Bloom · Milan</span>
-        </div>
-      </div>
-      <div class="page right">
-        <span class="folio">004</span>
-        <!-- IMG-DROP: editorial 02 — replace .photo block with <img src="edit02.jpg" alt="..."/> -->
-        <div class="photo">
-          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
-            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
-          </svg>
-          <div class="ph-label">Editorial · 02</div>
-        </div>
-        <div class="edit-caption">
-          <em>Dazed</em><span class="dash">—</span><span>Concrete Saints · Berlin</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= SPREAD 3 — EDITORIAL II ================= -->
-    <section class="spread" data-spread="2">
-      <div class="page">
-        <span class="folio">005</span>
-        <!-- IMG-DROP: editorial 03 — replace .photo block with <img src="edit03.jpg" alt="..."/> -->
-        <div class="photo">
-          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
-            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
-          </svg>
-          <div class="ph-label">Editorial · 03</div>
-        </div>
-        <div class="edit-caption">
-          <em>i-D</em><span class="dash">—</span><span>Late Mechanics · Tokyo</span>
-        </div>
-      </div>
-      <div class="page right">
-        <span class="folio">006</span>
-        <!-- IMG-DROP: editorial 04 — replace .photo block with <img src="edit04.jpg" alt="..."/> -->
-        <div class="photo">
-          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
-            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
-          </svg>
-          <div class="ph-label">Editorial · 04</div>
-        </div>
-        <div class="edit-caption">
-          <em>Numéro</em><span class="dash">—</span><span>House of Salt · Marseille</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= SPREAD 4 — BIOGRAPHY ================= -->
-    <section class="spread" data-spread="3">
-      <div class="page bio-left">
-        <span class="kicker">Chapter II</span>
-        <span class="chapter">Biography</span>
-        <span class="folio">007</span>
-
-        <h2 class="head">THE BODY<br>SPEAKS <span class="red">FIRST.</span></h2>
-
-        <p class="body">
-          Born in <em>Trieste</em> on the seam between two seas, Elena Voss
-          arrived in front of a camera at seventeen and never quite left.
-          She works the way a sculptor works marble — with patience for the
-          stone, suspicion for the chisel. Editorial since 2021. Campaign
-          since the next morning.
-        </p>
-
-        <div class="stats">
-          <div class="row"><span class="lbl">Height</span><span class="val">180 cm</span></div>
-          <div class="row"><span class="lbl">Bust</span>  <span class="val">82 cm</span></div>
-          <div class="row"><span class="lbl">Waist</span> <span class="val">61 cm</span></div>
-          <div class="row"><span class="lbl">Hips</span>  <span class="val">89 cm</span></div>
-          <div class="row"><span class="lbl">Eyes</span>  <span class="val">Hazel</span></div>
-          <div class="row"><span class="lbl">Hair</span>  <span class="val">Dark Brown</span></div>
-        </div>
-      </div>
-      <div class="page right bio-right">
-        <span class="chapter">Biography</span>
-        <span class="folio">008</span>
-        <!-- IMG-DROP: bio portrait — replace .photo block with <img src="bio.jpg" alt="..."/> -->
-        <div class="photo">
-          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
-            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
-          </svg>
-          <div class="ph-label">Biography · Portrait</div>
-        </div>
-        <span class="credit">Photo · Marius Kessler / 2025</span>
-      </div>
-    </section>
-
-    <!-- ================= SPREAD 5 — CLIENTS / TEAM ================= -->
-    <section class="spread" data-spread="4">
-      <div class="page dark clients">
-        <span class="kicker">Chapter III</span>
-        <span class="chapter">Credits</span>
-        <span class="folio">009</span>
-
-        <h2 class="head">SELECTED<br>WORK</h2>
-
-        <div class="list">
-          <div class="row"><span class="nm">Maison Margiela</span><span class="yr">2025</span></div>
-          <div class="row"><span class="nm">Acne Studios</span>   <span class="yr">2025</span></div>
-          <div class="row"><span class="nm">Bottega Veneta</span> <span class="yr">2024</span></div>
-          <div class="row"><span class="nm">Rick Owens</span>     <span class="yr">2024</span></div>
-          <div class="row"><span class="nm">The Row</span>        <span class="yr">2024</span></div>
-          <div class="row"><span class="nm">Comme des Garçons</span><span class="yr">2023</span></div>
-          <div class="row"><span class="nm">Loewe</span>           <span class="yr">2023</span></div>
-          <div class="row"><span class="nm">Hermès</span>          <span class="yr">2022</span></div>
-        </div>
-      </div>
-      <div class="page right cream team">
-        <span class="chapter">Credits</span>
-        <span class="folio">010</span>
-
-        <h2 class="head">THE TEAM</h2>
-
-        <div class="entry"><div class="role">Photography</div><div class="person">Marius Kessler</div></div>
-        <div class="entry"><div class="role">Styling</div>    <div class="person">Inez de Bruyn</div></div>
-        <div class="entry"><div class="role">Hair</div>       <div class="person">Akira Tanaka</div></div>
-        <div class="entry"><div class="role">Makeup</div>     <div class="person">Sofia Marchetti</div></div>
-        <div class="entry"><div class="role">Casting</div>    <div class="person">Lukas Heine</div></div>
-
-        <div class="agency">IMG MODELS · WORLDWIDE</div>
-      </div>
-    </section>
-
-    <!-- ================= SPREAD 6 — CONTACT ================= -->
-    <section class="spread" data-spread="5">
-      <div class="page contact-left">
-        <span class="kicker">Coda</span>
-        <span class="chapter">Contact</span>
-        <span class="folio">011</span>
-
-        <h2 class="head">GET IN<br>TOUCH.</h2>
-
-        <div class="rule-full"></div>
-        <a class="mail" href="mailto:bookings@elenavoss.com">bookings@elenavoss.com</a>
-
-        <div class="socials">
-          <div class="row"><span class="l">Instagram</span><span>@elena.voss</span></div>
-          <div class="row"><span class="l">Agency</span>   <span>IMG · Paris</span></div>
-          <div class="row"><span class="l">Phone</span>    <span>+33 1 42 00 19 76</span></div>
-        </div>
-      </div>
-      <div class="page right dark contact-right">
-        <span class="chapter">Contact</span>
-        <span class="folio">012</span>
-
-        <div class="ghost">CONTACT</div>
-
-        <div class="col">
-          <span class="dot"></span>
-          <p class="tag">
-            Quiet hours, slow shutters,<br>and the long patience of the lens.
-          </p>
-          <span class="dot"></span>
-        </div>
-
-        <div class="copy">© MMXXVI · Elena Voss · All rights reserved</div>
-      </div>
-    </section>
+    <div id="spreads-root"></div>
 
   </div><!-- /.book -->
 </div><!-- /.stage -->
@@ -612,27 +416,250 @@ body{display:flex;align-items:center;justify-content:center;}
 
   const book   = document.getElementById('book');
   const stage  = document.getElementById('stage');
-  const spreads= Array.from(document.querySelectorAll('.spread'));
-  const total  = spreads.length;            // 6
+  const spreadsRoot = document.getElementById('spreads-root');
   const prevBtn= document.getElementById('prev');
   const nextBtn= document.getElementById('next');
   const dotsEl = document.getElementById('dots');
+  const imageExtRe = /\.(avif|webp|png|jpe?g|gif)$/i;
+  const imageDir = 'images';
+  const modelName = 'EESHA P';
+  const modelAgency = 'FRM';
+  const modelLocation = 'Brisbane';
+  const modelStats = "5'9\" / 175 cm — Bust 32 10C — Waist 24 — Hips 35";
+  const modelFeatures = 'Hair Black — Eyes Dark Brown';
+  const contactEmail = 'bookings@frm.com.au';
+  const contactPhone = '+61 3 9521 5466';
+  const contactInstagram = '@eesha.p';
 
   let cur   = 0;   // current spread index 0..5
   let side  = 0;   // mobile sub-page: 0 = left page, 1 = right page
   let busy  = false;
+  let spreads = [];
+  let total = 0;
+  let dotBtns = [];
 
   const isMobile = () => window.matchMedia('(max-width:620px)').matches;
+  const camSvg = '<svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1"><rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/></svg>';
 
-  /* ---------- Dots ---------- */
-  for(let i=0;i<total;i++){
-    const b=document.createElement('button');
-    b.setAttribute('role','tab');
-    b.setAttribute('aria-label','Spread '+(i+1));
-    b.addEventListener('click',()=>jumpTo(i));
-    dotsEl.appendChild(b);
+  function normalizeImagePath(path){
+    const clean = String(path || '').trim().replace(/\\/g,'/').replace(/^\.\//,'');
+    if(!clean) return '';
+    if(clean.startsWith('http://') || clean.startsWith('https://') || clean.startsWith('/')) return clean;
+    return clean.startsWith(imageDir + '/') ? clean : (imageDir + '/' + clean);
   }
-  const dotBtns = Array.from(dotsEl.children);
+
+  function labelFromPath(path){
+    const file = path.split('/').pop() || 'image';
+    return file.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
+  }
+
+  function makePhotoPage(imagePath, pageNumber, right){
+    const page = document.createElement('div');
+    page.className = 'page' + (right ? ' right' : '');
+
+    const chapter = document.createElement('span');
+    chapter.className = 'chapter';
+    chapter.textContent = 'Gallery';
+
+    const folio = document.createElement('span');
+    folio.className = 'folio';
+    folio.textContent = String(pageNumber).padStart(3,'0');
+
+    const photo = document.createElement('div');
+    photo.className = 'photo';
+
+    const img = document.createElement('img');
+    img.src = imagePath;
+    img.alt = labelFromPath(imagePath);
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    photo.appendChild(img);
+
+    page.appendChild(chapter);
+    page.appendChild(folio);
+    page.appendChild(photo);
+    return page;
+  }
+
+  function makeEmptyPage(pageNumber, right, label){
+    const page = document.createElement('div');
+    page.className = 'page' + (right ? ' right' : '');
+
+    const chapter = document.createElement('span');
+    chapter.className = 'chapter';
+    chapter.textContent = 'Gallery';
+
+    const folio = document.createElement('span');
+    folio.className = 'folio';
+    folio.textContent = String(pageNumber).padStart(3,'0');
+
+    const photo = document.createElement('div');
+    photo.className = 'photo';
+    photo.innerHTML = camSvg + '<div class="ph-label">' + label + '</div>';
+
+    page.appendChild(chapter);
+    page.appendChild(folio);
+    page.appendChild(photo);
+    return page;
+  }
+
+  function makeCoverSpread(firstImage){
+    const spread = document.createElement('section');
+    spread.className = 'spread active';
+    spread.dataset.spread = '0';
+
+    const left = document.createElement('div');
+    left.className = 'page dark cover-left';
+    left.innerHTML =
+      '<span class="kicker">Portfolio — Book Edition</span>' +
+      '<span class="chapter">Cover</span>' +
+      '<span class="folio">001</span>' +
+      '<div class="bar"></div>' +
+      '<h1 class="name">' + modelName.replace(/\s+/g,'<br>') + '</h1>' +
+      '<div class="info">' +
+      '<span>' + modelAgency + ' · ' + modelLocation + '</span>' +
+      '<span>' + modelStats + '</span>' +
+      '<span>' + modelFeatures + '</span>' +
+      '</div>';
+
+    const right = document.createElement('div');
+    right.className = 'page right cover-right';
+    right.innerHTML =
+      '<span class="chapter">Cover</span>' +
+      '<span class="folio">002</span>' +
+      '<div class="photo"><img src="' + firstImage + '" alt="' + modelName + ' cover portrait" loading="eager" decoding="async"><div class="ph-label">Cover Portrait</div></div>' +
+      '<div class="ghost">' + modelName.split(' ')[0] + '</div>' +
+      '<span class="year">2026</span>';
+
+    spread.appendChild(left);
+    spread.appendChild(right);
+    return spread;
+  }
+
+  function makeContactSpread(pageNumber){
+    const spread = document.createElement('section');
+    spread.className = 'spread';
+    spread.dataset.spread = String(spreadsRoot.children.length);
+
+    const left = document.createElement('div');
+    left.className = 'page contact-left';
+    left.innerHTML =
+      '<span class="kicker">Coda</span>' +
+      '<span class="chapter">Contact</span>' +
+      '<span class="folio">' + String(pageNumber).padStart(3,'0') + '</span>' +
+      '<h2 class="head">CONTACT<br>ME.</h2>' +
+      '<div class="rule-full"></div>' +
+      '<a class="mail" href="mailto:' + contactEmail + '">' + contactEmail + '</a>' +
+      '<div class="socials">' +
+      '<div class="row"><span class="l">Instagram</span><span>' + contactInstagram + '</span></div>' +
+      '<div class="row"><span class="l">Agency</span><span>' + modelAgency + ' · ' + modelLocation + '</span></div>' +
+      '<div class="row"><span class="l">Phone</span><span>' + contactPhone + '</span></div>' +
+      '</div>';
+
+    const right = document.createElement('div');
+    right.className = 'page right dark contact-right';
+    right.innerHTML =
+      '<span class="chapter">Contact</span>' +
+      '<span class="folio">' + String(pageNumber + 1).padStart(3,'0') + '</span>' +
+      '<div class="ghost">CONTACT</div>' +
+      '<div class="col">' +
+      '<span class="dot"></span>' +
+      '<p class="tag">Open to campaigns, runway,<br>editorial, and creative collaborations.</p>' +
+      '<span class="dot"></span>' +
+      '</div>' +
+      '<div class="copy">© 2026 · ' + modelName + ' · All rights reserved</div>';
+
+    spread.appendChild(left);
+    spread.appendChild(right);
+    return spread;
+  }
+
+  function rebuildBook(imagePaths){
+    spreadsRoot.innerHTML = '';
+    const usable = imagePaths.filter(Boolean);
+    cur = 0;
+    side = 0;
+
+    if(!usable.length){
+      const spread = document.createElement('section');
+      spread.className = 'spread active';
+      spread.dataset.spread = '0';
+      spread.appendChild(makeEmptyPage(1,false,'No images found in images folder'));
+      spread.appendChild(makeEmptyPage(2,true,'Add images or images/manifest.json'));
+      spreadsRoot.appendChild(spread);
+    } else {
+      const first = usable[0];
+      spreadsRoot.appendChild(makeCoverSpread(first));
+
+      let pageNumber = 3;
+      for(let i=1;i<usable.length;i+=2){
+        const spread = document.createElement('section');
+        spread.className = 'spread';
+        spread.dataset.spread = String(spreadsRoot.children.length);
+
+        spread.appendChild(makePhotoPage(usable[i], pageNumber, false));
+        pageNumber += 1;
+        if(i + 1 < usable.length){
+          spread.appendChild(makePhotoPage(usable[i + 1], pageNumber, true));
+          pageNumber += 1;
+        } else {
+          spread.appendChild(makeEmptyPage(pageNumber, true, 'End of gallery'));
+          pageNumber += 1;
+        }
+        spreadsRoot.appendChild(spread);
+      }
+
+      spreadsRoot.appendChild(makeContactSpread(pageNumber));
+    }
+
+    spreads = Array.from(document.querySelectorAll('.spread'));
+    total = spreads.length;
+  }
+
+  function rebuildDots(){
+    dotsEl.innerHTML = '';
+    for(let i=0;i<total;i++){
+      const b=document.createElement('button');
+      b.setAttribute('role','tab');
+      b.setAttribute('aria-label','Spread '+(i+1));
+      b.addEventListener('click',()=>jumpTo(i));
+      dotsEl.appendChild(b);
+    }
+    dotBtns = Array.from(dotsEl.children);
+  }
+
+  async function loadImagesFromManifest(){
+    try{
+      const res = await fetch(imageDir + '/manifest.json', { cache:'no-store' });
+      if(!res.ok) return [];
+      const data = await res.json();
+      if(!Array.isArray(data)) return [];
+      return data.map(normalizeImagePath).filter((p)=>imageExtRe.test(p));
+    }catch(_err){
+      return [];
+    }
+  }
+
+  async function loadImagesFromDirectoryIndex(){
+    try{
+      const res = await fetch(imageDir + '/');
+      if(!res.ok) return [];
+      const html = await res.text();
+      const hrefs = Array.from(html.matchAll(/href=["']([^"']+)["']/gi)).map((m)=>decodeURIComponent(m[1]));
+      const files = hrefs
+        .filter((href)=>!href.startsWith('?') && !href.startsWith('#') && imageExtRe.test(href))
+        .map(normalizeImagePath);
+      return Array.from(new Set(files));
+    }catch(_err){
+      return [];
+    }
+  }
+
+  async function loadImages(){
+    const fromManifest = await loadImagesFromManifest();
+    if(fromManifest.length) return fromManifest;
+    return loadImagesFromDirectoryIndex();
+  }
 
   /* ---------- Render state ---------- */
   function render(){
@@ -649,11 +676,57 @@ body{display:flex;align-items:center;justify-content:center;}
   }
 
   /* ---------- Navigation ---------- */
+  function animateMobileSpreadTurn(target, dir){
+    if(busy) return;
+    const curS = spreads[cur];
+    const tgtS = spreads[target];
+    if(!curS || !tgtS) return;
+
+    busy = true;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'mobile-slide';
+    const track = document.createElement('div');
+    track.className = 'track';
+
+    const paneA = document.createElement('div');
+    paneA.className = 'pane';
+    const paneB = document.createElement('div');
+    paneB.className = 'pane';
+
+    if(dir==='fwd'){
+      paneA.appendChild(curS.children[1].cloneNode(true));
+      paneB.appendChild(tgtS.children[0].cloneNode(true));
+      track.style.transform = 'translateX(0)';
+    } else {
+      paneA.appendChild(tgtS.children[1].cloneNode(true));
+      paneB.appendChild(curS.children[0].cloneNode(true));
+      track.style.transform = 'translateX(-100vw)';
+    }
+
+    track.appendChild(paneA);
+    track.appendChild(paneB);
+    wrap.appendChild(track);
+    book.appendChild(wrap);
+
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      track.style.transform = dir==='fwd' ? 'translateX(-100vw)' : 'translateX(0)';
+    }));
+
+    setTimeout(()=>{
+      wrap.remove();
+      cur = target;
+      side = dir==='fwd' ? 0 : 1;
+      render();
+      busy = false;
+    }, 570);
+  }
+
   function next(){
     if(busy) return;
     if(isMobile()){
       if(side===0){ side=1; render(); return; }
-      if(cur<total-1){ cur++; side=0; render(); }
+      if(cur<total-1){ animateMobileSpreadTurn(cur + 1, 'fwd'); }
       return;
     }
     if(cur<total-1) flipTo(cur+1,'fwd');
@@ -662,7 +735,7 @@ body{display:flex;align-items:center;justify-content:center;}
     if(busy) return;
     if(isMobile()){
       if(side===1){ side=0; render(); return; }
-      if(cur>0){ cur--; side=1; render(); }
+      if(cur>0){ animateMobileSpreadTurn(cur - 1, 'bwd'); }
       return;
     }
     if(cur>0) flipTo(cur-1,'bwd');
@@ -787,7 +860,11 @@ body{display:flex;align-items:center;justify-content:center;}
     }
   });
 
-  render();
+  loadImages().then((images)=>{
+    rebuildBook(images);
+    rebuildDots();
+    render();
+  });
 })();
 </script>
 </body>
