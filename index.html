@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Elena Voss — Portfolio AW26</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="description" content="The portfolio of Elena Voss — a paginated book in the browser." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   ELENA VOSS — Single-file portfolio
+   Modern Brutalism × Luxury Editorial
+   ========================================================= */
+:root{
+  --black:#0a0a0a;
+  --offwhite:#f0ede6;
+  --cream:#e8e4db;
+  --warm:#c4bfb5;
+  --mid:#7a7570;
+  --red:#c8001e;
+  --ease:cubic-bezier(.5,.05,.25,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  width:100%;height:100%;
+  overflow:hidden;
+  background:radial-gradient(ellipse at center,#1a1714 0%,#070605 100%);
+  font-family:'Space Mono',monospace;
+  color:var(--black);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+body{display:flex;align-items:center;justify-content:center;}
+
+/* paper grain via inline SVG noise */
+.grain{
+  position:absolute;inset:0;pointer-events:none;z-index:60;
+  opacity:.08;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- Book stage & geometry ---------- */
+.stage{
+  perspective:2600px;
+  width:min(96vw,1500px);
+  height:min(88vh,940px);
+  display:flex;align-items:center;justify-content:center;
+}
+.book{
+  position:relative;
+  width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .5s var(--ease);
+  box-shadow:
+    0 30px 60px -20px rgba(0,0,0,.75),
+    0 70px 130px -40px rgba(0,0,0,.55);
+}
+.spread{
+  position:absolute;inset:0;
+  display:flex;
+  background:var(--offwhite);
+  z-index:2;
+}
+.spread:not(.active){display:none;}
+.page{
+  position:relative;
+  width:50%;height:100%;
+  overflow:hidden;
+  background:var(--offwhite);
+  color:var(--black);
+}
+.page.dark{background:var(--black);color:var(--offwhite);}
+.page.cream{background:var(--cream);}
+
+/* spine + edge depth */
+.book::before{
+  content:"";position:absolute;left:50%;top:0;bottom:0;width:34px;
+  transform:translateX(-50%);pointer-events:none;z-index:50;
+  background:linear-gradient(to right,
+    rgba(0,0,0,0)   0%,
+    rgba(0,0,0,.18) 20%,
+    rgba(0,0,0,.55) 50%,
+    rgba(0,0,0,.18) 80%,
+    rgba(0,0,0,0)   100%);
+}
+.book::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:51;
+  box-shadow:
+    inset 22px 0 28px -20px rgba(0,0,0,.55),
+    inset -22px 0 28px -20px rgba(0,0,0,.55),
+    inset 0 22px 28px -20px rgba(0,0,0,.35),
+    inset 0 -22px 28px -20px rgba(0,0,0,.35);
+}
+
+/* ---------- Page chrome ---------- */
+.kicker,.chapter,.folio{
+  position:absolute;
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--mid);z-index:6;
+}
+.kicker{top:22px;left:28px;}
+.chapter{top:22px;}
+.folio{bottom:22px;font-size:9px;}
+.page:not(.right) .chapter,.page:not(.right) .folio{left:28px;}
+.page.right .chapter,.page.right .folio{right:28px;}
+.page.dark .kicker,.page.dark .chapter,.page.dark .folio{color:var(--warm);opacity:.55;}
+
+/* ---------- Photo placeholder ---------- */
+.photo{
+  position:relative;width:100%;height:100%;
+  background:#161310;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.photo .cam{width:64px;height:64px;opacity:.10;}
+.photo .ph-label{
+  position:absolute;bottom:64px;left:0;right:0;text-align:center;
+  font-size:9px;letter-spacing:.3em;color:rgba(240,237,230,.22);
+  text-transform:uppercase;
+}
+.photo > img{width:100%;height:100%;object-fit:cover;display:block;}
+
+/* ============= SPREAD 1 — COVER ============= */
+.cover-left{
+  display:flex;flex-direction:column;
+  padding:78px 44px 56px;
+}
+.cover-left .top{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--warm);}
+.cover-left .bar{height:2px;width:96px;background:var(--red);margin:auto 0 18px;}
+.cover-left .name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(80px,17vw,260px);
+  line-height:.82;letter-spacing:.005em;color:var(--offwhite);
+  word-break:break-word;
+}
+.cover-left .info{
+  margin-top:auto;padding-top:14px;
+  border-top:1px solid rgba(196,191,181,.22);
+  display:flex;justify-content:space-between;
+  font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--warm);
+}
+.cover-right .ghost{
+  position:absolute;left:-6%;bottom:6%;z-index:3;pointer-events:none;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(160px,30vw,420px);
+  color:rgba(240,237,230,.07);
+  line-height:.78;letter-spacing:-.01em;
+}
+.cover-right .year{
+  position:absolute;right:24px;bottom:60px;
+  font-size:9px;letter-spacing:.3em;color:rgba(240,237,230,.55);z-index:4;
+}
+
+/* ============= EDITORIAL ============= */
+.edit-caption{
+  position:absolute;left:0;right:0;bottom:0;z-index:4;
+  padding:60px 28px 20px;
+  background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,0));
+  display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  font-family:'Space Mono',monospace;
+  font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(240,237,230,.82);
+}
+.edit-caption em{
+  font-family:'Playfair Display',serif;font-style:italic;
+  color:var(--red);font-size:13px;letter-spacing:.04em;text-transform:none;
+}
+.edit-caption .dash{opacity:.6;}
+
+/* ============= BIO ============= */
+.bio-left{
+  padding:78px 46px 56px;
+  display:flex;flex-direction:column;
+}
+.bio-left .head{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(54px,7.5vw,118px);
+  line-height:.88;letter-spacing:.005em;color:var(--black);
+  margin-top:22px;
+}
+.bio-left .head .red{color:var(--red);}
+.bio-left .body{
+  font-family:'Playfair Display',serif;
+  font-size:11px;line-height:1.8;color:#1a1a1a;
+  border-left:2px solid var(--red);
+  padding:6px 0 6px 18px;margin-top:30px;max-width:94%;
+}
+.bio-left .body em{font-style:italic;}
+.bio-left .stats{
+  margin-top:auto;padding-top:22px;
+  border-top:1px solid rgba(10,10,10,.18);
+  display:grid;grid-template-columns:1fr 1fr;gap:14px 36px;
+}
+.bio-left .stats .row{display:flex;justify-content:space-between;align-items:baseline;}
+.bio-left .stats .lbl{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--mid);}
+.bio-left .stats .val{font-size:12px;font-weight:700;color:var(--black);letter-spacing:.05em;}
+.bio-right .credit{
+  position:absolute;right:14px;bottom:46px;z-index:4;
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  font-size:8px;letter-spacing:.35em;text-transform:uppercase;
+  color:rgba(240,237,230,.32);
+}
+
+/* ============= CLIENTS / CREDITS ============= */
+.clients{
+  padding:78px 44px 56px;
+  display:flex;flex-direction:column;color:var(--offwhite);
+}
+.clients .head{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px,6.4vw,100px);
+  line-height:.9;margin-top:22px;color:var(--offwhite);
+}
+.clients .list{margin-top:auto;}
+.clients .row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:13px 0;border-top:1px solid rgba(196,191,181,.16);
+  font-family:'Space Mono',monospace;
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+}
+.clients .row:last-child{border-bottom:1px solid rgba(196,191,181,.16);}
+.clients .row .nm{color:var(--warm);}
+.clients .row .yr{color:#3a3735;}
+
+.team{
+  padding:78px 44px 56px;
+  display:flex;flex-direction:column;color:var(--black);
+}
+.team .head{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px,6.4vw,100px);
+  line-height:.9;margin-top:22px;margin-bottom:34px;
+}
+.team .entry{margin-bottom:18px;}
+.team .role{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--mid);}
+.team .person{font-family:'Playfair Display',serif;font-style:italic;font-size:19px;color:var(--black);margin-top:4px;}
+.team .agency{
+  margin-top:auto;padding-top:22px;
+  border-top:1px solid rgba(10,10,10,.18);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(30px,3.6vw,56px);
+  letter-spacing:.04em;color:var(--black);
+}
+
+/* ============= CONTACT ============= */
+.contact-left{
+  padding:78px 48px 56px;
+  display:flex;flex-direction:column;
+}
+.contact-left .head{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(72px,11.5vw,190px);
+  line-height:.85;flex:1;display:flex;align-items:center;
+}
+.contact-left .rule-full{height:1px;background:var(--black);width:100%;margin:18px 0 22px;}
+.contact-left .mail{
+  font-family:'Space Mono',monospace;font-size:14px;letter-spacing:.04em;text-transform:lowercase;
+  color:var(--black);align-self:flex-start;
+  border-bottom:1px solid var(--red);padding-bottom:3px;
+}
+.contact-left .socials{
+  margin-top:30px;padding-top:18px;
+  border-top:1px solid rgba(10,10,10,.18);
+  display:flex;flex-direction:column;gap:12px;
+}
+.contact-left .socials .row{
+  display:flex;justify-content:space-between;
+  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--black);
+}
+.contact-left .socials .row .l{color:var(--mid);}
+
+.contact-right{
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.contact-right .ghost{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(140px,22vw,300px);
+  color:rgba(240,237,230,.05);letter-spacing:.02em;pointer-events:none;
+}
+.contact-right .col{
+  position:relative;z-index:3;
+  display:flex;flex-direction:column;align-items:center;gap:26px;
+  text-align:center;padding:0 32px;
+}
+.contact-right .dot{width:9px;height:9px;border-radius:50%;background:var(--red);}
+.contact-right .tag{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:17px;line-height:1.6;color:rgba(240,237,230,.55);max-width:300px;
+}
+.contact-right .copy{
+  position:absolute;left:0;right:0;bottom:60px;text-align:center;z-index:3;
+  font-size:8px;letter-spacing:.32em;text-transform:uppercase;color:rgba(240,237,230,.35);
+}
+
+/* ---------- NAVIGATION ---------- */
+.nav-arrow{
+  position:fixed;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  padding:14px;z-index:300;opacity:.85;transition:opacity .35s;
+}
+.nav-arrow:hover{opacity:1;}
+.nav-arrow.hidden{opacity:0;pointer-events:none;}
+.nav-arrow.prev{left:14px;}
+.nav-arrow.next{right:14px;}
+.nav-arrow svg{width:30px;height:30px;stroke:var(--offwhite);fill:none;stroke-width:1.4;stroke-linecap:square;stroke-linejoin:miter;}
+
+.dots{
+  position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+  display:flex;gap:14px;z-index:300;
+}
+.dots button{
+  width:7px;height:7px;border-radius:50%;
+  border:none;background:rgba(240,237,230,.32);
+  cursor:pointer;padding:0;
+  transition:transform .35s var(--ease),background .35s;
+}
+.dots button.active{background:#fff;transform:scale(1.45);}
+
+/* ---------- PAGE-CURL FLIPPER ---------- */
+.flipper{
+  position:absolute;top:0;width:50%;height:100%;
+  transform-style:preserve-3d;
+  z-index:100;pointer-events:none;
+  transition:transform .9s var(--ease);
+}
+.flipper.r{right:0;transform-origin:left center;transform:rotateY(0deg);}
+.flipper.l{left:0; transform-origin:right center;transform:rotateY(0deg);}
+.flipper.r.flip{transform:rotateY(-180deg);}
+.flipper.l.flip{transform:rotateY( 180deg);}
+.flipper .face{
+  position:absolute;inset:0;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background:var(--offwhite);
+}
+.flipper .back{transform:rotateY(180deg);}
+.flipper .face .page{width:100%;height:100%;}
+/* darkening fold gradient — drawn on the moving face */
+.flipper .shade{
+  position:absolute;inset:0;pointer-events:none;
+  opacity:0;transition:opacity .9s var(--ease);
+}
+.flipper.r .front .shade{background:linear-gradient(to left ,rgba(0,0,0,.55),rgba(0,0,0,0) 65%);}
+.flipper.r .back  .shade{background:linear-gradient(to right,rgba(0,0,0,.55),rgba(0,0,0,0) 65%);}
+.flipper.l .front .shade{background:linear-gradient(to right,rgba(0,0,0,.55),rgba(0,0,0,0) 65%);}
+.flipper.l .back  .shade{background:linear-gradient(to left ,rgba(0,0,0,.55),rgba(0,0,0,0) 65%);}
+.flipper.flip .shade{opacity:1;}
+
+/* ---------- MOBILE ---------- */
+@media (max-width:620px){
+  .stage{width:100vw;height:100vh;}
+  .book{box-shadow:none;overflow:hidden;}
+  .book::before,.book::after{display:none;}
+  .spread{
+    position:absolute;top:0;left:0;bottom:0;
+    width:200vw;height:100%;
+    transition:transform .55s var(--ease);
+  }
+  .spread .page{width:100vw;height:100%;}
+  .spread.show-right{transform:translateX(-100vw);}
+  .flipper{display:none;}
+  .nav-arrow{padding:10px;}
+  .nav-arrow svg{width:22px;height:22px;}
+  .dots{bottom:10px;gap:10px;}
+  .cover-left{padding:60px 26px 44px;}
+  .cover-left .name{font-size:26vw;}
+  .bio-left,.clients,.team,.contact-left{padding:60px 26px 50px;}
+  .bio-left .head{font-size:14vw;}
+  .clients .head,.team .head{font-size:14vw;}
+  .contact-left .head{font-size:24vw;}
+  .edit-caption{padding:50px 22px 18px;}
+}
+@media (max-height:520px) and (orientation:landscape){
+  .cover-left .name{font-size:12vh;}
+}
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="book" id="book">
+    <div class="grain"></div>
+
+    <!-- ================= SPREAD 1 — COVER ================= -->
+    <section class="spread active" data-spread="0">
+      <!-- LEFT PAGE -->
+      <div class="page dark cover-left">
+        <span class="kicker">AW26 — Ed. 01 / Portfolio</span>
+        <span class="chapter">Cover</span>
+        <span class="folio">001</span>
+
+        <div class="bar"></div>
+        <h1 class="name">ELENA<br>VOSS</h1>
+
+        <div class="info">
+          <span>IMG · Paris / New York</span>
+          <span>5'11" — Italian / Dutch</span>
+          <span>MMXXVI</span>
+        </div>
+      </div>
+      <!-- RIGHT PAGE -->
+      <div class="page right">
+        <span class="chapter">Cover</span>
+        <span class="folio">002</span>
+
+        <!-- IMG-DROP: cover portrait — replace .photo block with <img src="cover.jpg" alt="Elena Voss cover portrait"/> -->
+        <div class="photo">
+          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
+            <rect x="6" y="16" width="52" height="38" rx="1"/>
+            <path d="M22 16l4-6h12l4 6"/>
+            <circle cx="32" cy="36" r="10"/>
+            <circle cx="32" cy="36" r="4"/>
+            <circle cx="50" cy="22" r="1.4" fill="white"/>
+          </svg>
+          <div class="ph-label">Cover · Portrait</div>
+        </div>
+        <div class="ghost">VOSS</div>
+        <span class="year">MMXXVI</span>
+      </div>
+    </section>
+
+    <!-- ================= SPREAD 2 — EDITORIAL I ================= -->
+    <section class="spread" data-spread="1">
+      <div class="page">
+        <span class="folio">003</span>
+        <!-- IMG-DROP: editorial 01 — replace .photo block with <img src="edit01.jpg" alt="..."/> -->
+        <div class="photo">
+          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
+            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
+          </svg>
+          <div class="ph-label">Editorial · 01</div>
+        </div>
+        <div class="edit-caption">
+          <em>Vogue Italia</em><span class="dash">—</span><span>Cold Bloom · Milan</span>
+        </div>
+      </div>
+      <div class="page right">
+        <span class="folio">004</span>
+        <!-- IMG-DROP: editorial 02 — replace .photo block with <img src="edit02.jpg" alt="..."/> -->
+        <div class="photo">
+          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
+            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
+          </svg>
+          <div class="ph-label">Editorial · 02</div>
+        </div>
+        <div class="edit-caption">
+          <em>Dazed</em><span class="dash">—</span><span>Concrete Saints · Berlin</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SPREAD 3 — EDITORIAL II ================= -->
+    <section class="spread" data-spread="2">
+      <div class="page">
+        <span class="folio">005</span>
+        <!-- IMG-DROP: editorial 03 — replace .photo block with <img src="edit03.jpg" alt="..."/> -->
+        <div class="photo">
+          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
+            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
+          </svg>
+          <div class="ph-label">Editorial · 03</div>
+        </div>
+        <div class="edit-caption">
+          <em>i-D</em><span class="dash">—</span><span>Late Mechanics · Tokyo</span>
+        </div>
+      </div>
+      <div class="page right">
+        <span class="folio">006</span>
+        <!-- IMG-DROP: editorial 04 — replace .photo block with <img src="edit04.jpg" alt="..."/> -->
+        <div class="photo">
+          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
+            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
+          </svg>
+          <div class="ph-label">Editorial · 04</div>
+        </div>
+        <div class="edit-caption">
+          <em>Numéro</em><span class="dash">—</span><span>House of Salt · Marseille</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SPREAD 4 — BIOGRAPHY ================= -->
+    <section class="spread" data-spread="3">
+      <div class="page bio-left">
+        <span class="kicker">Chapter II</span>
+        <span class="chapter">Biography</span>
+        <span class="folio">007</span>
+
+        <h2 class="head">THE BODY<br>SPEAKS <span class="red">FIRST.</span></h2>
+
+        <p class="body">
+          Born in <em>Trieste</em> on the seam between two seas, Elena Voss
+          arrived in front of a camera at seventeen and never quite left.
+          She works the way a sculptor works marble — with patience for the
+          stone, suspicion for the chisel. Editorial since 2021. Campaign
+          since the next morning.
+        </p>
+
+        <div class="stats">
+          <div class="row"><span class="lbl">Height</span><span class="val">180 cm</span></div>
+          <div class="row"><span class="lbl">Bust</span>  <span class="val">82 cm</span></div>
+          <div class="row"><span class="lbl">Waist</span> <span class="val">61 cm</span></div>
+          <div class="row"><span class="lbl">Hips</span>  <span class="val">89 cm</span></div>
+          <div class="row"><span class="lbl">Eyes</span>  <span class="val">Hazel</span></div>
+          <div class="row"><span class="lbl">Hair</span>  <span class="val">Dark Brown</span></div>
+        </div>
+      </div>
+      <div class="page right bio-right">
+        <span class="chapter">Biography</span>
+        <span class="folio">008</span>
+        <!-- IMG-DROP: bio portrait — replace .photo block with <img src="bio.jpg" alt="..."/> -->
+        <div class="photo">
+          <svg class="cam" viewBox="0 0 64 64" fill="none" stroke="white" stroke-width="1.1">
+            <rect x="6" y="16" width="52" height="38" rx="1"/><path d="M22 16l4-6h12l4 6"/><circle cx="32" cy="36" r="10"/><circle cx="32" cy="36" r="4"/><circle cx="50" cy="22" r="1.4" fill="white"/>
+          </svg>
+          <div class="ph-label">Biography · Portrait</div>
+        </div>
+        <span class="credit">Photo · Marius Kessler / 2025</span>
+      </div>
+    </section>
+
+    <!-- ================= SPREAD 5 — CLIENTS / TEAM ================= -->
+    <section class="spread" data-spread="4">
+      <div class="page dark clients">
+        <span class="kicker">Chapter III</span>
+        <span class="chapter">Credits</span>
+        <span class="folio">009</span>
+
+        <h2 class="head">SELECTED<br>WORK</h2>
+
+        <div class="list">
+          <div class="row"><span class="nm">Maison Margiela</span><span class="yr">2025</span></div>
+          <div class="row"><span class="nm">Acne Studios</span>   <span class="yr">2025</span></div>
+          <div class="row"><span class="nm">Bottega Veneta</span> <span class="yr">2024</span></div>
+          <div class="row"><span class="nm">Rick Owens</span>     <span class="yr">2024</span></div>
+          <div class="row"><span class="nm">The Row</span>        <span class="yr">2024</span></div>
+          <div class="row"><span class="nm">Comme des Garçons</span><span class="yr">2023</span></div>
+          <div class="row"><span class="nm">Loewe</span>           <span class="yr">2023</span></div>
+          <div class="row"><span class="nm">Hermès</span>          <span class="yr">2022</span></div>
+        </div>
+      </div>
+      <div class="page right cream team">
+        <span class="chapter">Credits</span>
+        <span class="folio">010</span>
+
+        <h2 class="head">THE TEAM</h2>
+
+        <div class="entry"><div class="role">Photography</div><div class="person">Marius Kessler</div></div>
+        <div class="entry"><div class="role">Styling</div>    <div class="person">Inez de Bruyn</div></div>
+        <div class="entry"><div class="role">Hair</div>       <div class="person">Akira Tanaka</div></div>
+        <div class="entry"><div class="role">Makeup</div>     <div class="person">Sofia Marchetti</div></div>
+        <div class="entry"><div class="role">Casting</div>    <div class="person">Lukas Heine</div></div>
+
+        <div class="agency">IMG MODELS · WORLDWIDE</div>
+      </div>
+    </section>
+
+    <!-- ================= SPREAD 6 — CONTACT ================= -->
+    <section class="spread" data-spread="5">
+      <div class="page contact-left">
+        <span class="kicker">Coda</span>
+        <span class="chapter">Contact</span>
+        <span class="folio">011</span>
+
+        <h2 class="head">GET IN<br>TOUCH.</h2>
+
+        <div class="rule-full"></div>
+        <a class="mail" href="mailto:bookings@elenavoss.com">bookings@elenavoss.com</a>
+
+        <div class="socials">
+          <div class="row"><span class="l">Instagram</span><span>@elena.voss</span></div>
+          <div class="row"><span class="l">Agency</span>   <span>IMG · Paris</span></div>
+          <div class="row"><span class="l">Phone</span>    <span>+33 1 42 00 19 76</span></div>
+        </div>
+      </div>
+      <div class="page right dark contact-right">
+        <span class="chapter">Contact</span>
+        <span class="folio">012</span>
+
+        <div class="ghost">CONTACT</div>
+
+        <div class="col">
+          <span class="dot"></span>
+          <p class="tag">
+            Quiet hours, slow shutters,<br>and the long patience of the lens.
+          </p>
+          <span class="dot"></span>
+        </div>
+
+        <div class="copy">© MMXXVI · Elena Voss · All rights reserved</div>
+      </div>
+    </section>
+
+  </div><!-- /.book -->
+</div><!-- /.stage -->
+
+<button class="nav-arrow prev" id="prev" aria-label="Previous spread">
+  <svg viewBox="0 0 24 24"><polyline points="15 4 7 12 15 20"/></svg>
+</button>
+<button class="nav-arrow next" id="next" aria-label="Next spread">
+  <svg viewBox="0 0 24 24"><polyline points="9 4 17 12 9 20"/></svg>
+</button>
+
+<div class="dots" id="dots" role="tablist" aria-label="Spreads"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  const book   = document.getElementById('book');
+  const stage  = document.getElementById('stage');
+  const spreads= Array.from(document.querySelectorAll('.spread'));
+  const total  = spreads.length;            // 6
+  const prevBtn= document.getElementById('prev');
+  const nextBtn= document.getElementById('next');
+  const dotsEl = document.getElementById('dots');
+
+  let cur   = 0;   // current spread index 0..5
+  let side  = 0;   // mobile sub-page: 0 = left page, 1 = right page
+  let busy  = false;
+
+  const isMobile = () => window.matchMedia('(max-width:620px)').matches;
+
+  /* ---------- Dots ---------- */
+  for(let i=0;i<total;i++){
+    const b=document.createElement('button');
+    b.setAttribute('role','tab');
+    b.setAttribute('aria-label','Spread '+(i+1));
+    b.addEventListener('click',()=>jumpTo(i));
+    dotsEl.appendChild(b);
+  }
+  const dotBtns = Array.from(dotsEl.children);
+
+  /* ---------- Render state ---------- */
+  function render(){
+    spreads.forEach((s,i)=>{
+      s.classList.toggle('active', i===cur);
+      s.classList.toggle('show-right', isMobile() && i===cur && side===1);
+    });
+    dotBtns.forEach((d,i)=>d.classList.toggle('active', i===cur));
+
+    const atStart = cur===0 && (!isMobile() || side===0);
+    const atEnd   = cur===total-1 && (!isMobile() || side===1);
+    prevBtn.classList.toggle('hidden', atStart);
+    nextBtn.classList.toggle('hidden', atEnd);
+  }
+
+  /* ---------- Navigation ---------- */
+  function next(){
+    if(busy) return;
+    if(isMobile()){
+      if(side===0){ side=1; render(); return; }
+      if(cur<total-1){ cur++; side=0; render(); }
+      return;
+    }
+    if(cur<total-1) flipTo(cur+1,'fwd');
+  }
+  function prev(){
+    if(busy) return;
+    if(isMobile()){
+      if(side===1){ side=0; render(); return; }
+      if(cur>0){ cur--; side=1; render(); }
+      return;
+    }
+    if(cur>0) flipTo(cur-1,'bwd');
+  }
+  function jumpTo(i){
+    if(busy || i===cur) return;
+    if(isMobile()){ cur=i; side=0; render(); return; }
+    flipTo(i, i>cur ? 'fwd' : 'bwd');
+  }
+
+  /* ---------- Page-curl flip ---------- */
+  function flipTo(target, dir){
+    if(busy) return;
+    busy = true;
+    const fwd = dir==='fwd';
+    const curS = spreads[cur];
+    const tgtS = spreads[target];
+
+    /* underlying composite spread shown beneath the flipper:
+       fwd: cur-LEFT + tgt-RIGHT   bwd: tgt-LEFT + cur-RIGHT  */
+    const under = document.createElement('section');
+    under.className = 'spread active';
+    under.style.zIndex = '1';
+    if(fwd){
+      under.appendChild(curS.children[0].cloneNode(true));
+      under.appendChild(tgtS.children[1].cloneNode(true));
+    } else {
+      under.appendChild(tgtS.children[0].cloneNode(true));
+      under.appendChild(curS.children[1].cloneNode(true));
+    }
+    curS.classList.remove('active');
+    book.appendChild(under);
+
+    /* the flipping page itself */
+    const flipper = document.createElement('div');
+    flipper.className = 'flipper ' + (fwd ? 'r' : 'l');
+
+    const front = document.createElement('div'); front.className='face front';
+    const back  = document.createElement('div'); back.className ='face back';
+
+    if(fwd){
+      front.appendChild(curS.children[1].cloneNode(true)); // current right
+      back .appendChild(tgtS.children[0].cloneNode(true)); // next left
+    } else {
+      front.appendChild(curS.children[0].cloneNode(true)); // current left
+      back .appendChild(tgtS.children[1].cloneNode(true)); // prev right
+    }
+    const sh1=document.createElement('div'); sh1.className='shade'; front.appendChild(sh1);
+    const sh2=document.createElement('div'); sh2.className='shade'; back .appendChild(sh2);
+
+    flipper.appendChild(front);
+    flipper.appendChild(back);
+    book.appendChild(flipper);
+
+    /* trigger animation */
+    requestAnimationFrame(()=>requestAnimationFrame(()=>flipper.classList.add('flip')));
+
+    setTimeout(()=>{
+      cur = target;
+      flipper.remove();
+      under.remove();
+      render();
+      busy = false;
+    }, 920);
+  }
+
+  /* ---------- Keyboard ---------- */
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='ArrowRight' || e.key==='PageDown') next();
+    else if(e.key==='ArrowLeft' || e.key==='PageUp') prev();
+  });
+
+  /* ---------- Touch ---------- */
+  let tStartX=0, tStartY=0, tracking=false;
+  document.addEventListener('touchstart',(e)=>{
+    if(!e.touches[0]) return;
+    tStartX=e.touches[0].clientX;
+    tStartY=e.touches[0].clientY;
+    tracking=true;
+  },{passive:true});
+  document.addEventListener('touchend',(e)=>{
+    if(!tracking || !e.changedTouches[0]) return;
+    tracking=false;
+    const dx=e.changedTouches[0].clientX - tStartX;
+    const dy=e.changedTouches[0].clientY - tStartY;
+    if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)){
+      dx<0 ? next() : prev();
+    }
+  },{passive:true});
+
+  /* ---------- Arrow buttons ---------- */
+  prevBtn.addEventListener('click',prev);
+  nextBtn.addEventListener('click',next);
+
+  /* ---------- Desktop 3D tilt on mousemove ---------- */
+  let tiltRAF=0;
+  stage.addEventListener('mousemove',(e)=>{
+    if(isMobile()) return;
+    const r=stage.getBoundingClientRect();
+    const x=(e.clientX - r.left)/r.width  - 0.5; // -.5 .. .5
+    const y=(e.clientY - r.top )/r.height - 0.5;
+    cancelAnimationFrame(tiltRAF);
+    tiltRAF=requestAnimationFrame(()=>{
+      // ±1.5deg X, ±1deg Y
+      book.style.transform = 'rotateX('+(-y*3).toFixed(2)+'deg) rotateY('+(x*2).toFixed(2)+'deg)';
+    });
+  });
+  stage.addEventListener('mouseleave',()=>{
+    cancelAnimationFrame(tiltRAF);
+    book.style.transform='';
+  });
+
+  /* ---------- Resize handling ---------- */
+  let lastMobile = isMobile();
+  window.addEventListener('resize',()=>{
+    const nowMobile = isMobile();
+    if(nowMobile !== lastMobile){
+      lastMobile = nowMobile;
+      side = 0;
+      if(!nowMobile) book.style.transform='';
+      render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
