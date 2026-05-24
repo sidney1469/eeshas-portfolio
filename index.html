@@ -830,6 +830,37 @@ body{display:flex;align-items:center;justify-content:center;}
   prevBtn.addEventListener('click',prev);
   nextBtn.addEventListener('click',next);
 
+  /* ---------- Mouse-wheel / trackpad ----------
+     The page is overflow:hidden so native scrolling does nothing.
+     Translate wheel/trackpad input into page flips, debounced so that
+     a single trackpad fling (which fires many wheel events) only turns
+     one page. */
+  let wheelAccum = 0;
+  let wheelCooldown = false;
+  let wheelResetT = 0;
+  const WHEEL_THRESHOLD = 40;
+  const WHEEL_COOLDOWN_MS = 700;
+  window.addEventListener('wheel',(e)=>{
+    // prefer the dominant axis so horizontal trackpad swipes work too
+    const d = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+    if(d === 0) return;
+    e.preventDefault();
+    if(busy || wheelCooldown){
+      // still consume residual inertia from the previous fling
+      return;
+    }
+    wheelAccum += d;
+    clearTimeout(wheelResetT);
+    wheelResetT = setTimeout(()=>{ wheelAccum = 0; }, 180);
+    if(Math.abs(wheelAccum) >= WHEEL_THRESHOLD){
+      const goNext = wheelAccum > 0;
+      wheelAccum = 0;
+      wheelCooldown = true;
+      setTimeout(()=>{ wheelCooldown = false; }, WHEEL_COOLDOWN_MS);
+      goNext ? next() : prev();
+    }
+  },{passive:false});
+
   /* ---------- Desktop 3D tilt on mousemove ---------- */
   let tiltRAF=0;
   stage.addEventListener('mousemove',(e)=>{
